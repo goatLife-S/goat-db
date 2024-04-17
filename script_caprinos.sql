@@ -4,13 +4,16 @@ USE sprint_2;
 CREATE TABLE cliente (
 idCliente int primary key auto_increment,
 nomeCliente varchar(60),
+sobrenome varchar(45),
 telefone char(11),
-email varchar(60));
+email varchar(60),
+senha char(8),
+CNPJ char(20));
 
 DESCRIBE cliente;
 
 INSERT INTO cliente VALUES 
-(default,'Fernanda Caramico', '11234567890', 'fernandaCaramico@gmail.com');
+(default,'Fernanda','Caramico', '11234567890', 'fernandaCaramico@gmail.com', '12345678', '43.023.992/0001-22');
 
 SELECT * FROM cliente;
 
@@ -35,6 +38,24 @@ UPDATE fazenda SET fkCliente = 1 WHERE idFazenda = 1;
 UPDATE fazenda SET fkCliente = 1 WHERE idFazenda = 2;
 
 SELECT * FROM fazenda;
+
+CREATE TABLE funcionario (
+idFunc int primary key auto_increment,
+nomeFunc varchar(45),
+sobrenome varchar(45),
+telefone varchar(45),
+email varchar(60),
+senha char(8),
+fkFFazenda int,
+constraint fkFuncFazenda foreign key (fkFFazenda)
+references fazenda (idFazenda));
+
+DESCRIBE funcionario;
+
+INSERT INTO funcionario VALUES
+(default, 'Josefina','Lima', '11 97862-0888', 'joseLimaFazenda@gmail.com', '87654321', 1);
+
+SELECT * FROM funcionario;
 
 CREATE TABLE capril (
 idCapril int primary key auto_increment,
@@ -90,32 +111,32 @@ SELECT * FROM caprinos;
 CREATE TABLE sensores (
 idSensores int primary key auto_increment,
 nomeSensor varchar(45),
+localizacao varchar(45),
 tipoSensor varchar (45),
+temp_minima double,
+temp_maxima double,
 fkCaprilSensor int,
 constraint fkSensoresCapril foreign key (fkCaprilSensor)
 references capril (idCapril));
 
 INSERT INTO sensores VALUES
-(default, 'SensorT&U', 'temperatura e umidade', 1),
-(default, 'SensorT&U2', 'temperatura e umidade', 2);
+(default, 'SensorT&U','Parte superior do capril', 'temperatura e umidade', 32.5, 20.1, 1),
+(default, 'SensorT&U2','Parte superior do capril', 'temperatura e umidade', 32.5, 20.1, 2);
 
 DESCRIBE sensores;
 
 SELECT * FROM sensores;
 
-CREATE TABLE dados (
-idDados int primary key auto_increment,
-tempAmbiente double,
-tempMaxima double,
-tempMinima double,
-umidadeAmbiente varchar(45),
+CREATE TABLE medida (
+idMedida int primary key auto_increment,
+dht11_temperatura double,
+dht11_umidade int,
+dtCaptura datetime,
 fkSensores int,
 constraint fkTempSensor foreign key (fkSensores)
 references sensores (idSensores));
 
-INSERT INTO dados VALUES 
-(default, 25.2, 35.5, 8.1, '40%', 1),
-(default, 25.7, 35.5, 8.1, '35%', 2);
+SELECT * FROM medida;
 
 -- SELECT DO CLIENTE E DOS DADOS DE TODAS AS FAZENDAS
 
