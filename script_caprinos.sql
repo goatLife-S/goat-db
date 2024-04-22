@@ -7,13 +7,12 @@ nomeCliente varchar(60),
 sobrenome varchar(45),
 telefone char(11),
 email varchar(60),
-senha char(8),
-CNPJ char(20));
+senha char(8));
 
 DESCRIBE cliente;
 
 INSERT INTO cliente VALUES 
-(default,'Fernanda','Caramico', '11234567890', 'fernandaCaramico@gmail.com', '12345678', '43.023.992/0001-22');
+(default,'Fernanda','Caramico', '11234567890', 'fernandaCaramico@gmail.com', '12345678');
 
 SELECT * FROM cliente;
 
@@ -23,7 +22,11 @@ nomeFazenda varchar(60),
 CEP char(9),
 numeroEnd varchar(45),
 complemento varchar(45),
-qtdCapris int,
+rzSocial varchar(45),
+CNPJ char(14),
+email varchar(60),
+senha char(8),
+telefone char(11),
 fkCliente int,
 constraint fkFazendaCliente foreign key (fkCliente)
 references cliente (idCliente));
@@ -31,8 +34,8 @@ references cliente (idCliente));
 DESCRIBE fazenda;
 
 INSERT INTO fazenda VALUES 
-(default, 'Fazenda Feliz', '03940-010','90', 'A', 4, null),
-(default, 'Fazenda das Cabras', '07856-080','65','', 2, null);
+(default, 'Fazenda Feliz', '03940-010','90', 'A', 'Fazenda Feliz Ltda.', '11111111111111','fazendaFeliz@gmail.com', '12345678','11997458822',null),
+(default, 'Fazenda das Cabras', '07856-080','65','', 'Fazenda das Cabras Ltda.','2222222222222','fazendaCabras@gmail.com','87654321','11988824536', null);
 
 UPDATE fazenda SET fkCliente = 1 WHERE idFazenda = 1;
 UPDATE fazenda SET fkCliente = 1 WHERE idFazenda = 2;
@@ -41,7 +44,7 @@ SELECT * FROM fazenda;
 
 CREATE TABLE funcionario (
 idFunc int primary key auto_increment,
-nomeFunc varchar(45),
+nome varchar(45),
 sobrenome varchar(45),
 telefone varchar(45),
 email varchar(60),
@@ -53,7 +56,8 @@ references fazenda (idFazenda));
 DESCRIBE funcionario;
 
 INSERT INTO funcionario VALUES
-(default, 'Josefina','Lima', '11 97862-0888', 'joseLimaFazenda@gmail.com', '87654321', 1);
+(default, 'Josefina','Lima', '11 97862-0888', 'josefinaLimaFazenda@gmail.com', '87654321', 1),
+(default, 'Jose','Lima', '11 97862-0778', 'joseLimaFazenda@gmail.com', '87000321', 2);
 
 SELECT * FROM funcionario;
 
@@ -67,46 +71,15 @@ constraint fkCaprilFazenda foreign key (fkFazenda)
 references fazenda (idFazenda));
 
 INSERT INTO capril VALUES
-(default, 'CaprilBodes', 'Leste de fazenda', 100, null),
-(default, 'CaprilCabras', 'Oeste da fazenda', 100, null),
-(default, 'CaprilFilotes', 'Oeste da fazenda', 45, null),
-(default, 'CaprilFilotes', 'Leste da fazenda', 35, null),
-(default, 'CaprilCabras', 'Sul da fazenda', 60, null),
-(default, 'CaprilBodes', 'Sul da fazenda', 50, null);
+(default, 'Capril1', 'Leste de fazenda', 100, null),
+(default, 'Capril2', 'Sul da fazenda', 50, null);
 
 DESCRIBE capril;
 
-UPDATE capril SET fkFazenda = 1 WHERE idCapril IN (1,2,3,4);
-UPDATE capril SET fkFazenda = 2 WHERE idCapril IN (5, 6);
+UPDATE capril SET fkFazenda = 1 WHERE idCapril IN (1);
+UPDATE capril SET fkFazenda = 2 WHERE idCapril IN (2);
 
 SELECT * FROM capril;
-
-CREATE TABLE caprinos (
-idCaprinos int primary key auto_increment,
-sexo char(5),
-raça varchar(45),
-fkCapril int,
-constraint fkCaprinosCapril foreign key (fkCapril)
-references capril (idCapril));
-
-INSERT INTO caprinos VALUES 
-(default,'macho', 'bodes', null),
-(default, 'femêa', 'cabras', null),
-(default, 'macho', 'filhotes de cabras', null),
-(default, 'fêmea', 'filhotes de cabras', null),
-(default,'macho', 'bodes', null),
-(default, 'femêa', 'cabras', null);
-
-DESCRIBE caprinos;
-
-UPDATE caprinos SET fkCapril = 1 WHERE idCaprinos = 1;
-UPDATE caprinos SET fkCapril = 2 WHERE idCaprinos = 2;
-UPDATE caprinos SET fkCapril = 3 WHERE idCaprinos = 3;
-UPDATE caprinos SET fkCapril = 4 WHERE idCaprinos = 4;
-UPDATE caprinos SET fkcapril = 5 WHERE idCaprinos = 5;
-UPDATE caprinos SET fkCapril = 6 WHERE idCaprinos = 6;
-
-SELECT * FROM caprinos;
 
 CREATE TABLE sensores (
 idSensores int primary key auto_increment,
@@ -130,46 +103,54 @@ SELECT * FROM sensores;
 CREATE TABLE medida (
 idMedida int primary key auto_increment,
 dht11_temperatura double,
-dht11_umidade int,
-dtCaptura datetime,
+dht11_umidade double,
+dtCaptura datetime not null default current_timestamp(),
 fkSensores int,
 constraint fkTempSensor foreign key (fkSensores)
 references sensores (idSensores));
 
 SELECT * FROM medida;
 
--- SELECT DO CLIENTE E DOS DADOS DE TODAS AS FAZENDAS
+-- SELECT DOS DAODS DO CLIENTE E DOS DADOS DE TODAS AS FAZENDAS
 
 SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
- JOIN capril ON fkFazenda = idFazenda 
- JOIN caprinos ON fkCapril = idCapril;
+ JOIN capril ON fkFazenda = idFazenda;
  
- -- SELECT DOS DADOS DO CLIENTE, FAZENDA E APENAS DOS CAPRIS QUE POSSUEM O MONITORAMENTO
+ -- SELECT DOS DADOS DO CLIENTE, FAZENDA, FUNCIONÁRIO E APENAS DOS CAPRIS QUE POSSUEM O MONITORAMENTO
  
  SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
+ JOIN funcionario ON fkFFazenda = idFazenda
  JOIN capril ON fkFazenda = idFazenda 
- JOIN caprinos ON fkCapril = idCapril
  JOIN sensores ON fkCaprilSensor = idCapril
- JOIN dados ON fkSensores = idSensores;
+ LEFT JOIN medida ON fkSensores = idSensores;    
 
  SELECT 
-    cliente.nomeCliente AS Nome_Cliente, 
+    cliente.nomeCliente AS Nome_Cliente,
+    cliente.sobrenome AS Sobrenome_Cliente,
     cliente.telefone AS Telefone_Cliente,
+    cliente.email AS Email_Cliente,
     fazenda.nomeFazenda AS Nome_Fazenda, 
     fazenda.CEP AS CEP_Fazenda, 
     fazenda.numeroEnd as Numero_Endereco,
     fazenda.complemento as Complemento,
-    fazenda.qtdCapris AS Qtd_Capris_Fazenda,
-    caprinos.sexo AS Sexo_Caprinos, 
-    caprinos.raça AS Raça_Caprinos,
+    fazenda.rzSocial as Razão_Social,
+    fazenda.CNPJ as CNPJ,
+    fazenda.email as Email,
+    fazenda.senha as Senha,
+    fazenda.telefone as Telefone,
+    funcionario.nome as Nome_Funcionario,
+    funcionario.sobrenome as Sobrenome, 
+    funcionario.telefone as Telefone,
+    funcionario.email as Email,
+    funcionario.senha as Senha,
     sensores.*, 
-    dados.*
+    medida.*
 FROM cliente 
 JOIN fazenda ON cliente.idCliente = fazenda.fkCliente
 JOIN capril ON fazenda.idFazenda = capril.fkFazenda
-JOIN caprinos ON capril.idCapril = caprinos.fkCapril
 JOIN sensores ON capril.idCapril = sensores.fkCaprilSensor
-JOIN dados ON sensores.idSensores = dados.fkSensores;
+JOIN funcionario ON fazenda.idFazenda = funcionario.fkFFazenda
+LEFT JOIN medida ON sensores.idSensores = medida.fkSensores;
 
 
  
