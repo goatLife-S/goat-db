@@ -88,13 +88,15 @@ localizacao varchar(45),
 tipoSensor varchar (45),
 temp_minima double,
 temp_maxima double,
+umidade_min double,
+umidade_max double,
 fkCaprilSensor int,
 constraint fkSensoresCapril foreign key (fkCaprilSensor)
 references capril (idCapril));
 
 INSERT INTO sensores VALUES
-(default, 'SensorT&U','Parte superior do capril', 'temperatura e umidade', 32.5, 20.1, 1),
-(default, 'SensorT&U2','Parte superior do capril', 'temperatura e umidade', 32.5, 20.1, 2);
+(default, 'SensorT&U','Parte superior do capril', 'temperatura e umidade', 32.5, 20.1, 20, 35, 1),
+(default, 'SensorT&U2','Parte superior do capril', 'temperatura e umidade', 32.5, 20.1, 20, 35, 2);
 
 DESCRIBE sensores;
 
@@ -116,7 +118,7 @@ SELECT * FROM medida;
 SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
  JOIN capril ON fkFazenda = idFazenda;
  
- -- SELECT DOS DADOS DO CLIENTE, FAZENDA, FUNCIONÁRIO E APENAS DOS CAPRIS QUE POSSUEM O MONITORAMENTO
+ -- SELECT DOS DADOS DO CLIENTE, FAZENDA, FUNCIONÁRIO E CAPRIS QUE POSSUEM O MONITORAMENTO
  
  SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
  JOIN funcionario ON fkFFazenda = idFazenda
