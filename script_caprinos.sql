@@ -1,20 +1,20 @@
 CREATE DATABASE sprint_2;
 USE sprint_2;
 
-CREATE TABLE cliente (
-idCliente int primary key auto_increment,
-nomeCliente varchar(60),
+CREATE TABLE responsavel (
+idResponsavel int primary key auto_increment,
+nomeResponsavel varchar(60),
 sobrenome varchar(45),
 telefone char(11),
 email varchar(60),
 senha char(8));
 
-DESCRIBE cliente;
+DESCRIBE responsavel;
 
-INSERT INTO cliente VALUES 
+INSERT INTO responsavel VALUES 
 (default,'Fernanda','Caramico', '11234567890', 'fernandaCaramico@gmail.com', '12345678');
 
-SELECT * FROM cliente;
+SELECT * FROM responsavel;
 
 CREATE TABLE fazenda (
 idFazenda int primary key auto_increment,
@@ -27,9 +27,9 @@ CNPJ char(14),
 email varchar(60),
 senha char(8),
 telefone char(11),
-fkCliente int,
-constraint fkFazendaCliente foreign key (fkCliente)
-references cliente (idCliente));
+fkResponsavel int,
+constraint fkFazendaResponsavel foreign key (fkResponsavel)
+references responsavel (idResponsavel));
 
 DESCRIBE fazenda;
 
@@ -37,8 +37,8 @@ INSERT INTO fazenda VALUES
 (default, 'Fazenda Feliz', '03940-010','90', 'A', 'Fazenda Feliz Ltda.', '11111111111111','fazendaFeliz@gmail.com', '12345678','11997458822',null),
 (default, 'Fazenda das Cabras', '07856-080','65','', 'Fazenda das Cabras Ltda.','2222222222222','fazendaCabras@gmail.com','87654321','11988824536', null);
 
-UPDATE fazenda SET fkCliente = 1 WHERE idFazenda = 1;
-UPDATE fazenda SET fkCliente = 1 WHERE idFazenda = 2;
+UPDATE fazenda SET fkResponsavel = 1 WHERE idFazenda = 1;
+UPDATE fazenda SET fkResponsavel = 1 WHERE idFazenda = 2;
 
 SELECT * FROM fazenda;
 
@@ -115,22 +115,22 @@ SELECT * FROM medida;
 
 -- SELECT DOS DAODS DO CLIENTE E DOS DADOS DE TODAS AS FAZENDAS
 
-SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
+SELECT * FROM responsavel JOIN fazenda ON fkResponsavel = idResponsavel
  JOIN capril ON fkFazenda = idFazenda;
  
  -- SELECT DOS DADOS DO CLIENTE, FAZENDA, FUNCIONÁRIO E CAPRIS QUE POSSUEM O MONITORAMENTO
  
- SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
+ SELECT * FROM responsavel JOIN fazenda ON fkResponsavel = idResponsavel
  JOIN funcionario ON fkFFazenda = idFazenda
  JOIN capril ON fkFazenda = idFazenda 
  JOIN sensores ON fkCaprilSensor = idCapril
  LEFT JOIN medida ON fkSensores = idSensores;    
 
  SELECT 
-    cliente.nomeCliente AS Nome_Cliente,
-    cliente.sobrenome AS Sobrenome_Cliente,
-    cliente.telefone AS Telefone_Cliente,
-    cliente.email AS Email_Cliente,
+    responsavel.nomeResponsavel AS Nome_Responsavel,
+    responsavel.sobrenome AS Sobrenome_Responsavel,
+    responsavel.telefone AS Telefone_Responsavel,
+    responsavel.email AS Email_Responsavel,
     fazenda.nomeFazenda AS Nome_Fazenda, 
     fazenda.CEP AS CEP_Fazenda, 
     fazenda.numeroEnd as Numero_Endereco,
@@ -147,8 +147,8 @@ SELECT * FROM cliente JOIN fazenda ON fkCliente = idCliente
     funcionario.senha as Senha,
     sensores.*, 
     medida.*
-FROM cliente 
-JOIN fazenda ON cliente.idCliente = fazenda.fkCliente
+FROM responsavel
+JOIN fazenda ON responsavel.idResponsavel = fazenda.fkResponsavel
 JOIN capril ON fazenda.idFazenda = capril.fkFazenda
 JOIN sensores ON capril.idCapril = sensores.fkCaprilSensor
 JOIN funcionario ON fazenda.idFazenda = funcionario.fkFFazenda
