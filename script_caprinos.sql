@@ -47,8 +47,6 @@ idFunc int primary key auto_increment,
 nome varchar(45),
 sobrenome varchar(45),
 telefone varchar(45),
-email varchar(60),
-senha char(8),
 fkFFazenda int,
 constraint fkFuncFazenda foreign key (fkFFazenda)
 references fazenda (idFazenda));
@@ -56,8 +54,8 @@ references fazenda (idFazenda));
 DESCRIBE funcionario;
 
 INSERT INTO funcionario VALUES
-(default, 'Josefina','Lima', '11 97862-0888', 'josefinaLimaFazenda@gmail.com', '87654321', 1),
-(default, 'Jose','Lima', '11 97862-0778', 'joseLimaFazenda@gmail.com', '87000321', 2);
+(default, 'Josefina','Lima', '11 97862-0888', 1),
+(default, 'Jose','Lima', '11 97862-0778', 2);
 
 SELECT * FROM funcionario;
 
@@ -143,8 +141,6 @@ SELECT * FROM responsavel JOIN fazenda ON fkResponsavel = idResponsavel
     funcionario.nome as Nome_Funcionario,
     funcionario.sobrenome as Sobrenome, 
     funcionario.telefone as Telefone,
-    funcionario.email as Email,
-    funcionario.senha as Senha,
     sensores.*, 
     medida.*
 FROM responsavel
